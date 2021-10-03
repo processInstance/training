@@ -1,0 +1,45 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: route_qq
+          uri: http://www.qq.com
+          predicates:
+            - Query=url,qq
+        - id: route_baidu
+          uri: http://www.baidu.com
+          predicates:
+            - Query=url,baidu
+        - id: route-member
+          uri: lb://train-member
+          predicates:
+            - Path=/member/**
+        - id: plat-base
+          uri: lb://plat-base
+          predicates:
+            - Path=/platbase/**
+      locator:
+        enabled: true
+        lowerCaseServiceId: true
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowed-origins: "http://localhost:8080"
+            allowed-headers: "*"
+            allow-credentials: true
+            allowed-methods:
+              - GET
+              - POST
+              - DELETE
+              - PUT
+              - OPTION
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+  application:
+    name: plat-gateway
+server:
+  port: 8000
+  servlet:
+    context-path: /api
+

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.css.platbase.moudles.rbac.mapper.GroupMapper">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.css.platbase.moudles.rbac.dto.GroupDTO" id="GroupDTO">
+        <id property="id" column="id"/>
+        <result property="type" column="type"/>
+        <result property="name" column="name"/>
+        <result property="code" column="code"/>
+        <result property="shortName" column="short_name"/>
+        <result property="path" column="path"/>
+        <result property="orderNum" column="order_num"/>
+        <result property="remark" column="remark"/>
+        <association property="parent" javaType="com.css.platbase.moudles.rbac.entity.Group">
+            <id property="id" column="parent_id"/>
+            <result property="name" column="parent_name"/>
+            <result property="path" column="parent_path"/>
+        </association>
+    </resultMap>
+
+
+    <select id="getDTOById" resultMap="GroupDTO">
+        select
+        a.id ,
+        a.type ,
+        a.name ,
+        a.code ,
+        a.short_name ,
+        a.path ,
+        a.order_num ,
+        a.remark ,
+        parent.id as parent_id,
+        parent.name as parent_name,
+        parent.path as parent_path
+        from plat_group a left join plat_group parent on a.parent_id=parent.id where a.id=#{id}
+
+    </select>
+    <!-- 根据code集合查询所有code对应节点的子节点-->
+    <select id="treeSearch" resultType="com.css.platbase.moudles.rbac.entity.Group">
+  <!--      select * from plat_group b where b.parent_id in (
+        select a.id from plat_group a where  a.code in ('bj','fs') ) or b.parent_id='0'and b.is_del <> 1-->
+        select b.id,b.code,b.name,b.parent_id,b.path from plat_group b left  join  plat_group a
+            on b.parent_id=a.id and a.code in
+        <foreach item="item" index="index" collection="codeList"
+                 open="(" separator="," close=")">
+            #{item}
+        </foreach>
+            where b.parent_id ='0' or a.id is not null and b.is_del &lt;&gt;  '1'
+    </select>
+
+    <select id="selectPageDto"  resultMap="GroupDTO">
+        select
+            a.id ,
+            a.type ,
+            a.name ,
+            a.code ,
+            a.short_name ,
+            a.path ,
+            a.order_num ,
+            a.remark ,
+            parent.id as parent_id,
+            parent.name as parent_name,
+            parent.path as parent_path
+        from plat_group a left join plat_group parent on a.parent_id=parent.id
+    </select>
+</mapper>
