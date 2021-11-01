@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.css.platcommon.service.BaseService;
-import com.css.platcommon.utils.Query;
+import com.css.platcommon.utils.QueryUtil;
 
 import java.util.Map;
 
@@ -17,7 +17,7 @@ public class BaseServiceImp<M extends BaseMapper<T>, T> extends ServiceImpl<M, T
     @Override
     public IPage<T> queryPage(Map<String, Object> params) {
         IPage<T> page = this.page(
-                new Query<T>().getPage(params),
+                QueryUtil.getPage(params),
                 new QueryWrapper<T>()
         );
 

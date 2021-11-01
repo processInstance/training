@@ -29,4 +29,94 @@
         <result property="updTime" column="upd_time"/>
         <result property="remark" column="remark"/>
     </resultMap>
+
+    <resultMap id="UserDto" type="com.css.platbase.moudles.rbac.dto.UserDTO">
+        <result property="id" column="id"/>
+        <result property="userName" column="user_name"/>
+        <result property="loginName" column="login_name"/>
+        <result property="sex" column="sex"/>
+        <result property="nation" column="nation"/>
+        <result property="nativePlace" column="native_place"/>
+        <result property="birthday" column="birthday"/>
+        <result property="idCard" column="id_card"/>
+        <result property="telephone" column="telephone"/>
+        <result property="email" column="email"/>
+        <result property="mobilePhone" column="mobile_phone"/>
+        <result property="status" column="status"/>
+        <result property="type" column="type"/>
+        <result property="orderNum" column="order_num"/>
+        <result property="crtUser" column="crt_user"/>
+        <result property="crtName" column="crt_name"/>
+        <result property="crtTime" column="crt_time"/>
+        <result property="updUser" column="upd_user"/>
+        <result property="updName" column="upd_name"/>
+        <result property="updTime" column="upd_time"/>
+        <result property="remark" column="remark"/>
+        <discriminator javaType="int" column="group_type">
+            <case value="1">
+                <collection property="departments" ofType="com.css.platbase.moudles.rbac.dto.GroupDTO">
+                    <id property="id" column="group_id"/>
+                    <result property="name" column="group_name"/>
+                    <result property="shortName" column="group_short_name"/>
+                </collection>
+            </case>
+            <case value="2">
+                <collection property="roles" ofType="com.css.platbase.moudles.rbac.dto.GroupDTO">
+                    <id property="id" column="group_id"/>
+                    <result property="name" column="group_name"/>
+                    <result property="shortName" column="group_short_name"/>
+                </collection>
+            </case>
+            <case value="3">
+                <collection property="posts" ofType="com.css.platbase.moudles.rbac.dto.GroupDTO">
+                    <id property="id" column="group_id"/>
+                    <result property="name" column="group_name"/>
+                    <result property="shortName" column="group_short_name"/>
+                </collection>
+            </case>
+            <case value="4">
+                <collection property="customGroups" ofType="com.css.platbase.moudles.rbac.dto.GroupDTO">
+                    <id property="id" column="group_id"/>
+                    <result property="name" column="group_name"/>
+                    <result property="shortName" column="group_short_name"/>
+                </collection>
+            </case>
+        </discriminator>
+
+    </resultMap>
+
+    <select id="selectPageDto"  resultMap="UserDto">
+        select
+            a.id ,
+            a.user_name ,
+            a.login_name ,
+            a.sex ,
+            a.nation ,
+            a.native_place,
+            a.birthday ,
+            a.id_card ,
+            a.telephone ,
+            a.email,
+            a.mobile_phone,
+            a.status,
+            a.type,
+            a.order_num ,
+            a.remark ,
+            platgroup.id as group_id,
+            platgroup.name as group_name,
+            platgroup.short_name as group_short_name,
+            platgroup.type as group_type
+        from plat_user a left join plat_group_user groupuser on a.id=groupuser.user_id left outer join plat_group platgroup on groupuser.group_id=platgroup.id ${ew.customSqlSegment}
+    </select>
+
+    <select id="selectPageUser" resultType="com.css.platbase.moudles.rbac.entity.User">
+        select * from plat_user a
+        <if test="groupId !=null and groupId !=''">
+            right join plat_group_user groupuser on a.id=groupuser.user_id and groupuser.group_id= #{groupId}
+        </if>
+         ${ew.customSqlSegment}
+    </select>
+    <select id="listUserByGroupId" resultType="com.css.platbase.moudles.rbac.dto.UserDTO">
+        select * from plat_user a,plat_group_user groupuser where a.id=groupuser.user_id and groupuser.group_id= #{groupId} ${ew.customSqlSegment}
+    </select>
 </mapper>

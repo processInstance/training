@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.css.platbase.moudles.rbac.entity.Group;
 import com.css.platcommon.dto.BaseDTO;
 import lombok.Data;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 
 /**
@@ -66,6 +67,10 @@ public class GroupDTO implements BaseDTO<Group> {
         Group group=new Group();
         BeanUtils.copyProperties(this,group);
         group.setParentId(this.parent.getId());
+        if(StringUtils.isEmpty(group.getPath())){
+            String parentPath=StringUtils.isEmpty(this.parent.getPath())?"":this.parent.getPath();
+            group.setPath(parentPath+"/"+group.getCode());
+        }
         return group;
     }
 }

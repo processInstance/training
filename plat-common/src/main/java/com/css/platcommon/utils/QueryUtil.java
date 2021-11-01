@@ -21,13 +21,13 @@ import java.util.Map;
  *
  * @author Mark sunlightcs@gmail.com
  */
-public class Query<T> {
+public class QueryUtil {
 
-    public Page<T> getPage(Map<String, Object> params) {
-        return this.getPage(params, null, false);
+    public static Page getPage(Map<String, Object> params) {
+        return QueryUtil.getPage(params, null, false);
     }
 
-    public Page<T> getPage(Map<String, Object> params, String defaultOrderField, boolean isAsc) {
+    public static Page getPage(Map<String, Object> params, String defaultOrderField, boolean isAsc) {
         //分页参数
         long curPage = 1;
         long limit = 10;
@@ -40,14 +40,14 @@ public class Query<T> {
         }
 
         //分页对象
-        Page<T> page = new Page<>(curPage, limit);
+        Page page = new Page<>(curPage, limit);
 
         //分页参数
         params.put(Constant.PAGE, page);
 
         //排序字段
         //防止SQL注入（因为sidx、order是通过拼接SQL实现排序的，会有SQL注入风险）
-        String orderField = SQLFilter.sqlInject((String)params.get(Constant.ORDER_FIELD));
+        String orderField = SQLFilter.sqlInject((String)params.get(Constant.ORDER_FIELD),true);
         String order = (String)params.get(Constant.ORDER);
 
 
@@ -73,5 +73,32 @@ public class Query<T> {
         }
 
         return page;
+    }
+
+    public static Page getPage(int size,int current,String orderProp,boolean orderAsc) {
+        //分页参数
+        long curPage = 1;
+        long limit = 10;
+
+        if(current > -1){
+            curPage = current;
+        }
+        if(size>-1){
+            limit = size;
+        }
+
+        //分页对象
+        Page page = new Page<>(curPage, limit);
+
+        //排序字段
+        //防止SQL注入（因为sidx、order是通过拼接SQL实现排序的，会有SQL注入风险）
+        String orderField = SQLFilter.sqlInject(orderProp,true);
+        if(StringUtils.isEmpty(orderField))
+            return  page;
+        if(orderAsc){
+            return  page.addOrder(OrderItem.asc(orderField));
+        }
+        return page.addOrder(OrderItem.desc(orderField));
+
     }
 }

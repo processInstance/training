@@ -63,6 +63,6 @@
             parent.id as parent_id,
             parent.name as parent_name,
             parent.path as parent_path
-        from plat_group a left join plat_group parent on a.parent_id=parent.id
+        from plat_group a left join plat_group parent on a.parent_id=parent.id ${ew.customSqlSegment}
     </select>
 </mapper>

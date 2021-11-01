@@ -19,3 +19,10 @@ mybatis-plus:
   global-config:
     db-config:
       id-type: auto
+##mybaties显示sql
+logging:
+  level:
+    com:
+      css:
+        platbase:
+          moudles: debug

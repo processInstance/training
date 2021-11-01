@@ -19,4 +19,5 @@ public interface GroupService extends BaseService<Group> {
     List<Group> treeSearch(Set<String> codeList);
     GroupDTO getDTOById(String id);
     IPage<GroupDTO> selectPageDto(Page<?> page, Wrapper<GroupDTO> queryWrapper);
+    List<GroupDTO> selectPageDto(Wrapper<GroupDTO> queryWrapper);
 }

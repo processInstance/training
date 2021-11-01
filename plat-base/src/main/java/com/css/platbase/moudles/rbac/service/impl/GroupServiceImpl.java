@@ -30,4 +30,9 @@ public class GroupServiceImpl extends BaseServiceImp<GroupMapper, Group> impleme
     public IPage<GroupDTO> selectPageDto(Page<?> page, Wrapper<GroupDTO> queryWrapper) {
         return  this.baseMapper.selectPageDto(page,queryWrapper);
     }
+
+    @Override
+    public List<GroupDTO> selectPageDto(Wrapper<GroupDTO> queryWrapper) {
+        return  this.baseMapper.selectPageDto(queryWrapper);
+    }
 }

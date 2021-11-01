@@ -7,8 +7,12 @@
  */
 
 package com.css.platcommon.xss;
+import com.css.platcommon.utils.CommonUtils;
 import com.css.platcommon.utils.RRException;
 import org.apache.commons.lang.StringUtils;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * SQL过滤
@@ -21,7 +25,7 @@ public class SQLFilter {
      * SQL注入过滤
      * @param str  待验证的字符串
      */
-    public static String sqlInject(String str){
+    public static String sqlInject(String str,boolean humpToLine){
         if(StringUtils.isBlank(str)){
             return null;
         }
@@ -30,10 +34,6 @@ public class SQLFilter {
         str = StringUtils.replace(str, "\"", "");
         str = StringUtils.replace(str, ";", "");
         str = StringUtils.replace(str, "\\", "");
-
-        //转换成小写
-        str = str.toLowerCase();
-
         //非法字符
         String[] keywords = {"master", "truncate", "insert", "select", "delete", "update", "declare", "alter", "drop"};
 
@@ -43,7 +43,16 @@ public class SQLFilter {
                 throw new RRException("包含非法字符");
             }
         }
+        // 驼峰转下划线
+        if(humpToLine){
+            str = CommonUtils.humpToLine(str);
+        }
+       // 转换成小写
+        str = str.toLowerCase();
+
+
 
         return str;
     }
+
 }
